@@ -10,19 +10,19 @@ const Services = () => {
         {
             id: 1,
             name: 'Fluoride Treatment',
-            description: 'Lorem Ipsum is simply dummy printing and typesetting indust Ipsum has been the',
+            description: 'The treatment is safe, painless, and takes only a few minutes to complete. It is especially beneficial for children and adults who are at high risk of developing tooth decay. ',
             img: fluoride
         },
         {
             id: 2,
             name: 'Cavity Filling',
-            description: 'Lorem Ipsum is simply dummy printing and typesetting indust Ipsum has been the',
+            description: 'Cavity filling is an effective way to treat tooth decay and prevent more serious dental problems',
             img: cavity
         },
         {
             id: 3,
             name: 'Teeth Whitening',
-            description: 'Lorem Ipsum is simply dummy printing and typesetting indust Ipsum has been the',
+            description: 'Teeth whitening is a cosmetic dental procedure that involves removing stains and discoloration from the teeth to improve their appearance.',
             img: whitening
         },
     ]
