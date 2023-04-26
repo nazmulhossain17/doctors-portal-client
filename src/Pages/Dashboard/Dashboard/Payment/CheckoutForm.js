@@ -1,5 +1,5 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const CheckoutForm = ({booking}) => {
     const [cardError, setCardError] = useState('');
@@ -7,9 +7,25 @@ const CheckoutForm = ({booking}) => {
     const [processing, setProcessing] = useState(false);
     const [transactionId, setTransactionId] = useState('');
     const [clientSecret, setClientSecret] = useState("");
-    const {price} = booking;
+    const {price, email, patient, _id} = booking;
     const stripe = useStripe();
     const elements = useElements();
+
+
+    useEffect(() => {
+        // Create PaymentIntent as soon as the page loads
+        fetch("https://doctors-portal-server-iota-teal.vercel.app/create-payment-intent", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify({ price }),
+        })
+            .then((res) => res.json())
+            .then((data) => setClientSecret(data.clientSecret));
+    }, [price]);
+
 
     const handleSubmit = async(event)=>{
         event.preventDefault();
@@ -34,6 +50,49 @@ const CheckoutForm = ({booking}) => {
         else {
             setCardError('');
         }
+        setSuccess('')
+        const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(
+            clientSecret,
+            {
+                payment_method: {
+                    card: card,
+                    billing_details: {
+                        name: patient,
+                        email: email
+                    },
+                },
+            },
+        );
+        if (confirmError) {
+            setCardError(confirmError.message);
+            return;
+        }
+        if (paymentIntent.status === "succeeded") {
+            // console.log('card info', card);
+            const payment = {
+                price,
+                transactionId: paymentIntent.id,
+                email,
+                bookingId: _id
+            }
+            fetch('https://doctors-portal-server-iota-teal.vercel.app/payments',{
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    authorization: `bearer ${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify(payment)
+            })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data)
+                if(data.insertedId){
+                    setSuccess('Congrats! your payment completed');
+                    setTransactionId(paymentIntent.id);
+                }
+            })
+        }
+        setProcessing(false)
 
 
 
@@ -60,7 +119,7 @@ const CheckoutForm = ({booking}) => {
                 <button
                     className='btn btn-sm mt-4 btn-primary'
                     type="submit"
-                    disabled={!stripe}>
+                    disabled={!stripe || !clientSecret || processing}>
                     Pay
                 </button>
             </form>

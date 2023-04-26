@@ -22,7 +22,7 @@ const SignUp = () => {
         createUser(data.email, data.password)
             .then(result => {
                 const user = result.user;
-                console.log(user);
+                // console.log(user);
                 toast('User Created Successfully.')
                 const userInfo = {
                     displayName: data.name
@@ -41,7 +41,7 @@ const SignUp = () => {
 
     const saveUser = (name, email) =>{
         const user ={name, email};
-        fetch('http://localhost:5000/users', {
+        fetch('https://doctors-portal-server-iota-teal.vercel.app/users', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

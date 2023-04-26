@@ -6,14 +6,14 @@ const AllUsers = () => {
     const {data: users = [], refetch} = useQuery({
         queryKey: ['users'],
         queryFn: async() =>{
-            const res = await fetch('http://localhost:5000/users');
+            const res = await fetch('https://doctors-portal-server-iota-teal.vercel.app/users');
             const data = await res.json();
             return data;
         }
     })
 
     const handleMakeAdmin = id =>{
-        fetch(`http://localhost:5000/users/admin/${id}`,{
+        fetch(`https://doctors-portal-server-iota-teal.vercel.app/users/admin/${id}`,{
           method: 'PUT',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -51,7 +51,7 @@ const AllUsers = () => {
             <td><button className='btn btn-xs btn-danger'>Delete</button></td>
           </tr>)
       }
-      
+
     </tbody>
   </table>
 </div>

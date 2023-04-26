@@ -12,7 +12,7 @@ const AvailableAppointment = ({selectedDate}) => {
     const {data: appointmentOption = [], refetch, isLoading} = useQuery({
         queryKey: ['appointmentOption', date],
         queryFn: async() => {
-        const res = await fetch(`http://localhost:5000/v2/appointmentOptions?date=${date}`)
+        const res = await fetch(`https://doctors-portal-server-iota-teal.vercel.app/v2/appointmentOptions?date=${date}`)
         const data = await res.json();
         return data;
         }
